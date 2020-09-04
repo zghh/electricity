@@ -1,0 +1,161 @@
+{
+  "name": "network",
+  "description": "network",
+  "version": "1.0",
+  "client": {
+    "organization": "org1",
+    "credentialStore": {
+      "path": "D:/data/code/go/src/github.com/zghh/electricity/data/chains/client-kvs",
+      "cryptoStore": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/data/chains/client-cvs"
+      },
+      "wallet": "wallet"
+    }
+  },
+  "channels": {
+    "mychannel": {
+      "orderers": [
+        "orderer.example.com"
+      ],
+      "peers": {
+        "peer0.org1.example.com": {
+          "chaincodeQuery": true,
+          "endorsingPeer": true,
+          "eventSource": true,
+          "ledgerQuery": true
+        },
+        "peer1.org1.example.com": {
+          "chaincodeQuery": true,
+          "endorsingPeer": false,
+          "eventSource": false,
+          "ledgerQuery": true
+        },
+        "peer0.org2.example.com": {
+          "chaincodeQuery": true,
+          "endorsingPeer": true,
+          "eventSource": true,
+          "ledgerQuery": true
+        },
+        "peer1.org2.example.com": {
+          "chaincodeQuery": true,
+          "endorsingPeer": false,
+          "eventSource": false,
+          "ledgerQuery": true
+        }
+      }
+    }
+  },
+  "orderers": {
+    "orderer.example.com": {
+      "grpcOptions": {
+        "ssl-target-name-override": "orderer.example.com"
+      },
+      "tlsCACerts": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt"
+      },
+      "url": "grpcs://81.70.23.98:8050"
+    }
+  },
+  "certificateAuthorities": {
+    "ca-org1": {
+      "caName": "ca-org1",
+      "httpOptions": {
+        "verify": false
+      },
+      "registrar": [{
+        "enrollId": "admin",
+        "enrollSecret": "adminpw"
+      }],
+      "tlsCACerts": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
+      },
+      "url": "https://81.70.23.98:7850"
+    },
+    "ca-org2": {
+      "caName": "ca-org2",
+      "httpOptions": {
+        "verify": false
+      },
+      "registrar": [{
+        "enrollId": "admin",
+        "enrollSecret": "adminpw"
+      }],
+      "tlsCACerts": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem"
+      },
+      "url": "https://81.70.23.98:7950"
+    }
+  },
+  "organizations": {
+    "org1": {
+      "adminPrivateKey": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/admin_sk"
+      },
+      "certificateAuthorities": [
+        "ca-org1"
+      ],
+      "mspid": "Org1MSP",
+      "peers": [
+        "peer0.org1.example.com",
+        "peer1.org1.example.com"
+      ],
+      "signedCert": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+      }
+    },
+    "org2": {
+      "adminPrivateKey": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/admin_sk"
+      },
+      "certificateAuthorities": [
+        "ca-org2"
+      ],
+      "mspid": "Org2MSP",
+      "peers": [
+        "peer0.org2.example.com",
+        "peer1.org2.example.com"
+      ],
+      "signedCert": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem"
+      }
+    }
+  },
+  "peers": {
+    "peer0.org1.example.com": {
+      "url": "grpcs://81.70.23.98:7050",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.org1.example.com"
+      },
+      "tlsCACerts": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+      }
+    },
+    "peer1.org1.example.com": {
+      "url": "grpcs://81.70.23.98:7250",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer1.org1.example.com"
+      },
+      "tlsCACerts": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
+      }
+    },
+    "peer0.org2.example.com": {
+      "url": "grpcs://81.70.23.98:7450",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer0.org2.example.com"
+      },
+      "tlsCACerts": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+      }
+    },
+    "peer1.org2.example.com": {
+      "url": "grpcs://81.70.23.98:7650",
+      "grpcOptions": {
+        "ssl-target-name-override": "peer1.org2.example.com"
+      },
+      "tlsCACerts": {
+        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
+      }
+    }
+  }
+}

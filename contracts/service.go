@@ -12,6 +12,10 @@ import (
  * args[0] user
  */
 func register(stub shim.ChaincodeStubInterface, args []string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("Incorrect arguments")
+	}
+
 	user := User{}
 	if err := json.Unmarshal([]byte(args[0]), &user); err != nil {
 		return errors.Wrapf(err, "Unmarshal error: %s", args[0])
@@ -35,6 +39,10 @@ func register(stub shim.ChaincodeStubInterface, args []string) error {
  * args[0] user
  */
 func login(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 1 {
+		return "", fmt.Errorf("Incorrect arguments")
+	}
+
 	user := User{}
 	if err := json.Unmarshal([]byte(args[0]), &user); err != nil {
 		return "", errors.Wrapf(err, "Unmarshal error: %s", args[0])
@@ -47,15 +55,27 @@ func login(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 		return "", errors.Wrapf(err, "Get from user table error: %s", key)
 	}
 	if isNil || user.Password != userInState.Password {
-		return "false", nil
+		return "", fmt.Errorf("Invalid")
 	}
-	return "true", nil
+	jsonBytes, err := json.Marshal(&userInState)
+	if err != nil {
+		return "", errors.Wrapf(err, "Marshal error: %s", userInState)
+	}
+	return string(jsonBytes), nil
 }
 
 /**
  * args[0] order
  */
 func submitSellerOrder(stub shim.ChaincodeStubInterface, args []string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("Incorrect arguments")
+	}
+
+	timestamp, err := stub.GetTxTimestamp()
+	if err != nil {
+		return errors.Wrapf(err, "GetTxTimestamp error")
+	}
 	order := Order{}
 	if err := json.Unmarshal([]byte(args[0]), &order); err != nil {
 		return errors.Wrapf(err, "Unmarshal error: %s", args[0])
@@ -64,6 +84,7 @@ func submitSellerOrder(stub shim.ChaincodeStubInterface, args []string) error {
 	txid := stub.GetTxID()
 	order.OrderId = txid
 	order.RemainAmount = order.Amount
+	order.Time = timestamp.Seconds
 	if err := findBuyerOrders(stub, &order); err != nil {
 		return errors.Wrapf(err, "Find buyer orders error")
 	}
@@ -78,9 +99,11 @@ func submitSellerOrder(stub shim.ChaincodeStubInterface, args []string) error {
 		return errors.Wrapf(err, "Put to userOrders table error: %s", key)
 	}
 
-	key = fmt.Sprintf("%s-%s-%015d-%s", sellerOrderPrefix, order.EnergyType, order.Price, order.OrderId)
-	if err := stub.PutState(key, []byte(order.OrderId)); err != nil {
-		return errors.Wrapf(err, "Put to sellerOrder table error: %s", key)
+	if order.RemainAmount != 0 {
+		key = fmt.Sprintf("%s-%s-%015d-%s", sellerOrderPrefix, order.EnergyType, order.Price, order.OrderId)
+		if err := stub.PutState(key, []byte(order.OrderId)); err != nil {
+			return errors.Wrapf(err, "Put to sellerOrder table error: %s", key)
+		}
 	}
 	return nil
 }
@@ -89,6 +112,14 @@ func submitSellerOrder(stub shim.ChaincodeStubInterface, args []string) error {
  * args[0] order
  */
 func submitBuyerOrder(stub shim.ChaincodeStubInterface, args []string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("Incorrect arguments")
+	}
+
+	timestamp, err := stub.GetTxTimestamp()
+	if err != nil {
+		return errors.Wrapf(err, "GetTxTimestamp error")
+	}
 	order := Order{}
 	if err := json.Unmarshal([]byte(args[0]), &order); err != nil {
 		return errors.Wrapf(err, "Unmarshal error: %s", args[0])
@@ -97,6 +128,7 @@ func submitBuyerOrder(stub shim.ChaincodeStubInterface, args []string) error {
 	txid := stub.GetTxID()
 	order.OrderId = txid
 	order.RemainAmount = order.Amount
+	order.Time = timestamp.Seconds
 	if err := findSellerOrders(stub, &order); err != nil {
 		return errors.Wrapf(err, "Find buyer orders error")
 	}
@@ -111,17 +143,51 @@ func submitBuyerOrder(stub shim.ChaincodeStubInterface, args []string) error {
 		return errors.Wrapf(err, "Put to userOrders table error: %s", key)
 	}
 
-	key = fmt.Sprintf("%s-%s-%015d-%s", buyerOrderPrefix, order.EnergyType, order.Price, order.OrderId)
-	if err := stub.PutState(key, []byte(order.OrderId)); err != nil {
-		return errors.Wrapf(err, "Put to buyerOrder table error: %s", key)
+	if order.RemainAmount != 0 {
+		key = fmt.Sprintf("%s-%s-%015d-%s", buyerOrderPrefix, order.EnergyType, order.Price, order.OrderId)
+		if err := stub.PutState(key, []byte(order.OrderId)); err != nil {
+			return errors.Wrapf(err, "Put to buyerOrder table error: %s", key)
+		}
 	}
 	return nil
+}
+
+func queryCurrentOrders(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 0 {
+		return "", fmt.Errorf("Incorrect arguments")
+	}
+
+	buyerOrders := []Order{}
+	err := getCurrentOrders(stub, true, &buyerOrders)
+	if err != nil {
+		return "", errors.Wrapf(err, "Get buyer orders error")
+	}
+
+	sellerOrders := []Order{}
+	err = getCurrentOrders(stub, false, &sellerOrders)
+	if err != nil {
+		return "", errors.Wrapf(err, "Get buyer orders error")
+	}
+
+	result := QueryCurrentOrdersResponse{
+		BuyerOrders:  buyerOrders,
+		SellerOrders: sellerOrders,
+	}
+	jsonBytes, err := json.Marshal(&result)
+	if err != nil {
+		return "", errors.Wrapf(err, "Marshal error: %s", result)
+	}
+	return string(jsonBytes), nil
 }
 
 /**
  * args[0] userId
  */
-func queryOrders(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+func queryMyOrders(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 1 {
+		return "", fmt.Errorf("Incorrect arguments")
+	}
+
 	userId := args[0]
 	result := []Order{}
 
@@ -149,11 +215,50 @@ func queryOrders(stub shim.ChaincodeStubInterface, args []string) (string, error
 }
 
 /**
+ * args[0] orderId
+ */
+func queryOrderInfo(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 1 {
+		return "", fmt.Errorf("Incorrect arguments")
+	}
+
+	orderId := args[0]
+	key := fmt.Sprintf("%s-%s", orderPrefix, orderId)
+	orderInfo := Order{}
+	isNil, err := GetState(stub, key, &orderInfo)
+	if err != nil {
+		return "", errors.Wrapf(err, "Get from order table error: %s", key)
+	}
+	if isNil {
+		return "", fmt.Errorf("Order is not exists: %s", orderId)
+	}
+
+	transactions := []Transaction{}
+	key = fmt.Sprintf("%s-%s", orderTransactionsPrefix, orderId)
+	if _, err = GetState(stub, key, &transactions); err != nil {
+		return "", errors.Wrapf(err, "Get from orderTransactions table error: %s", key)
+	}
+
+	result := QueryOrderInfoResponse{
+		OrderInfo:    orderInfo,
+		Transactions: transactions,
+	}
+	jsonBytes, err := json.Marshal(&result)
+	if err != nil {
+		return "", errors.Wrapf(err, "Marshal error: %s", result)
+	}
+	return string(jsonBytes), nil
+}
+
+/**
  * args[0] userId
  */
 func queryTransactions(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	userId := args[0]
+	if len(args) != 1 {
+		return "", fmt.Errorf("Incorrect arguments")
+	}
 
+	userId := args[0]
 	key := fmt.Sprintf("%s-%s", userTransactionsPrefix, userId)
 	result, err := stub.GetState(key)
 	if err != nil {
@@ -163,4 +268,36 @@ func queryTransactions(stub shim.ChaincodeStubInterface, args []string) (string,
 		return "[]", nil
 	}
 	return string(result), nil
+}
+
+func getCurrentOrders(stub shim.ChaincodeStubInterface, isBuyer bool, orders *[]Order) error {
+	var perfix string
+	if isBuyer {
+		perfix = buyerOrderPrefix
+	} else {
+		perfix = sellerOrderPrefix
+	}
+	startKey := fmt.Sprintf("%s", perfix)
+	endKey := fmt.Sprintf("%s~", perfix)
+	iterator, err := stub.GetStateByRange(startKey, endKey)
+	if err != nil {
+		return errors.Wrapf(err, "GetStateByRange error")
+	}
+	for iterator.HasNext() {
+		result, err := iterator.Next()
+		if err != nil {
+			return errors.Wrapf(err, "Iterator error")
+		}
+		order := Order{}
+		key := fmt.Sprintf("%s-%s", orderPrefix, string(result.Value))
+		if _, err := GetState(stub, key, &order); err != nil {
+			return errors.Wrapf(err, "Get order error: %s", string(result.Value))
+		}
+		*orders = append(*orders, order)
+	}
+	err = iterator.Close()
+	if err != nil {
+		return errors.Wrapf(err, "Iterator error")
+	}
+	return nil
 }

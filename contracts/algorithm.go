@@ -14,8 +14,8 @@ func findBuyerOrders(stub shim.ChaincodeStubInterface, order *Order) error {
 	if err != nil {
 		return errors.Wrapf(err, "GetStateByRange error")
 	}
-	buyerOrders := []Order{}
 	defer iterator.Close()
+	buyerOrders := []Order{}
 	for iterator.HasNext() {
 		result, err := iterator.Next()
 		if err != nil {
@@ -61,8 +61,8 @@ func findSellerOrders(stub shim.ChaincodeStubInterface, order *Order) error {
 	if err != nil {
 		return errors.Wrapf(err, "GetStateByRange error")
 	}
-	sellerOrders := []Order{}
 	defer iterator.Close()
+	sellerOrders := []Order{}
 	for iterator.HasNext() {
 		result, err := iterator.Next()
 		if err != nil {
@@ -143,7 +143,7 @@ func addTransaction(stub shim.ChaincodeStubInterface, sellerOrder *Order, buyerO
 	}
 
 	sellerOrderTransactions := []Transaction{}
-	key = fmt.Sprintf("%s-%s", orderTransactionsPrefix, sellerOrder.UserId)
+	key = fmt.Sprintf("%s-%s", orderTransactionsPrefix, sellerOrder.OrderId)
 	if _, err := GetState(stub, key, &sellerOrderTransactions); err != nil {
 		return errors.Wrapf(err, "Get from orderTransactions table error: %s", key)
 	}
@@ -153,7 +153,7 @@ func addTransaction(stub shim.ChaincodeStubInterface, sellerOrder *Order, buyerO
 	}
 
 	buyerOrderTransactions := []Transaction{}
-	key = fmt.Sprintf("%s-%s", orderTransactionsPrefix, sellerOrder.UserId)
+	key = fmt.Sprintf("%s-%s", orderTransactionsPrefix, sellerOrder.OrderId)
 	if _, err := GetState(stub, key, &buyerOrderTransactions); err != nil {
 		return errors.Wrapf(err, "Get from orderTransactions table error: %s", key)
 	}
@@ -171,9 +171,9 @@ func updateOrder(stub shim.ChaincodeStubInterface, order *Order, isBuyer bool) e
 	}
 	if order.RemainAmount == 0 {
 		if isBuyer {
-			key = fmt.Sprintf("%s-%s-%015d-%d", buyerOrderPrefix, order.EnergyType, order.Price, order.OrderId)
+			key = fmt.Sprintf("%s-%s-%015d-%s", buyerOrderPrefix, order.EnergyType, order.Price, order.OrderId)
 		} else {
-			key = fmt.Sprintf("%s-%s-%015d-%d", sellerOrderPrefix, order.EnergyType, order.Price, order.OrderId)
+			key = fmt.Sprintf("%s-%s-%015d-%s", sellerOrderPrefix, order.EnergyType, order.Price, order.OrderId)
 		}
 		if err := stub.DelState(key); err != nil {
 			return errors.Wrapf(err, "Delete State error: %s", key)

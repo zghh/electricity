@@ -30,10 +30,11 @@ type Order struct {
 	Price        int64  `json:"price"`        // 电价
 	Amount       int64  `json:"amount"`       // 电量
 	RemainAmount int64  `json:"remainAmount"` // 剩余电量
+	Time         int64  `json:"time"`         // 订单发布时间
 }
 
 type Transaction struct {
-	TransactionId string `json:"TransactionId"` // 交易ID
+	TransactionId string `json:"transactionId"` // 交易ID
 	SellerOrderId string `json:"sellerOrderId"` // 卖方订单ID
 	BuyerOrderId  string `json:"buyerOrderId"`  // 买方订单ID
 	SellerId      string `json:"sellerId"`      // 卖方ID
@@ -42,4 +43,14 @@ type Transaction struct {
 	Price         int64  `json:"price"`         // 电价
 	Amount        int64  `json:"amount"`        // 电量
 	Time          int64  `json:"time"`          // 交易时间
+}
+
+type QueryCurrentOrdersResponse struct {
+	SellerOrders []Order `json:"sellerOrders"`
+	BuyerOrders  []Order `json:"buyerOrders"`
+}
+
+type QueryOrderInfoResponse struct {
+	OrderInfo    Order         `json:"orderInfo"`
+	Transactions []Transaction `json:"transactions"`
 }

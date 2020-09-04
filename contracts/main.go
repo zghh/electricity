@@ -16,9 +16,6 @@ func (t *Electricity) Init(stub shim.ChaincodeStubInterface) pb.Response {
 
 func (t *Electricity) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 	function, args := stub.GetFunctionAndParameters()
-	if len(args) != 1 {
-		return shim.Error("Incorrect arguments")
-	}
 	var result string
 	var err error
 	switch function {
@@ -30,8 +27,12 @@ func (t *Electricity) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		err = submitSellerOrder(stub, args)
 	case "submitBuyerOrder":
 		err = submitBuyerOrder(stub, args)
-	case "queryOrders":
-		result, err = queryOrders(stub, args)
+	case "queryCurrentOrders":
+		result, err = queryCurrentOrders(stub, args)
+	case "queryMyOrders":
+		result, err = queryMyOrders(stub, args)
+	case "queryOrderInfo":
+		result, err = queryOrderInfo(stub, args)
 	case "queryTransactions":
 		result, err = queryTransactions(stub, args)
 	}
