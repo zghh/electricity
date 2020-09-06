@@ -1,13 +1,18 @@
 import request from "../utils/request";
+import md5 from 'js-md5';
 
 export async function queryCurrent() {
   return request("/api/currentUser");
 }
 
 export async function login(params) {
+  const { password, username } = params;
   return request("login", {
     method: "POST",
-    body: params,
+    body: {
+      username,
+      password: md5(password),
+    },
   });
 }
 
@@ -27,7 +32,7 @@ export async function register(payload) {
       id: username,
       name,
       type: typeNumber,
-      password,
+      password: md5(password),
     },
   });
 }

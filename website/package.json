@@ -38,6 +38,7 @@
     "moment": "^2.19.1",
     "string-format": "^2.0.0",
     "jsonfile": "^4.0.0",
+    "js-md5": "^0.7.3",
     "fabric-ca-client": "1.4.8",
     "fabric-client": "1.4.8"
   },
