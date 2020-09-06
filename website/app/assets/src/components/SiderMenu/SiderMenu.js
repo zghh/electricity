@@ -4,9 +4,40 @@ import pathToRegexp from 'path-to-regexp';
 import { Link } from 'dva/router';
 import styles from './index.less';
 import { urlToList } from '../_utils/pathTools';
+import { IntlProvider, defineMessages } from 'react-intl';
+import { getLocale } from "../../utils/utils";
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
+const currentLocale = getLocale();
+const intlProvider = new IntlProvider(
+  { locale: currentLocale.locale, messages: currentLocale.messages },
+  {}
+);
+const { intl } = intlProvider.getChildContext();
+
+const messages = defineMessages({
+  name: {
+    id: 'Name',
+    defaultMessage: 'Electricity System',
+  },
+  order: {
+    id: 'Menu.Order',
+    defaultMessage: 'Order',
+  },
+  'order-currentOrders': {
+    id: 'Menu.Order.CurrentOrders',
+    defaultMessage: 'Current Orders',
+  },
+  'order-myOrders': {
+    id: 'Menu.Order.MyOrders',
+    defaultMessage: 'My Orders',
+  },
+  transaction: {
+    id: 'Menu.Transaction',
+    defaultMessage: 'Transaction',
+  },
+});
 
 // Allow menu.js config icon as string or ReactNode
 //   icon: 'setting',
@@ -104,7 +135,7 @@ export default class SiderMenu extends PureComponent {
         }
       >
         {icon}
-        <span>{name}</span>
+        <span>{intl.formatMessage(messages[name])}</span>
       </Link>
     );
   };
@@ -126,10 +157,10 @@ export default class SiderMenu extends PureComponent {
               item.icon ? (
                 <span>
                   {getIcon(item.icon)}
-                  <span>{item.name}</span>
+                  <span>{intl.formatMessage(messages[item.name])}</span>
                 </span>
               ) : (
-                  item.name
+                  intl.formatMessage(messages[item.name])
                 )
             }
             key={item.path}
@@ -219,7 +250,7 @@ export default class SiderMenu extends PureComponent {
         <div className={styles.logo} key="logo">
           <Link to="/">
             <img src={logo} alt="logo" />
-            <h1>Hyperledger Cello</h1>
+            <h1>{intl.formatMessage(messages.name)}</h1>
           </Link>
         </div>
         <Menu

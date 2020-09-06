@@ -15,6 +15,49 @@ import { getRoutes } from "../utils/utils";
 import Authorized from "../utils/Authorized";
 import { getMenuData } from "../common/menu";
 import logo from "../assets/logo.svg";
+import { IntlProvider, defineMessages } from 'react-intl';
+import { getLocale } from "../utils/utils";
+
+const currentLocale = getLocale();
+const intlProvider = new IntlProvider(
+  { locale: currentLocale.locale, messages: currentLocale.messages },
+  {}
+);
+const { intl } = intlProvider.getChildContext();
+const messages = defineMessages({
+  name: {
+    id: 'Name',
+    defaultMessage: 'Electricity System',
+  },
+  order: {
+    id: 'Menu.Order',
+    defaultMessage: 'Order',
+  },
+  'order-currentOrders': {
+    id: 'Menu.Order.CurrentOrders',
+    defaultMessage: 'Current Orders',
+  },
+  'order-myOrders': {
+    id: 'Menu.Order.MyOrders',
+    defaultMessage: 'My Orders',
+  },
+  'order-newOrder': {
+    id: 'Menu.Order.NewOrder',
+    defaultMessage: 'New Order',
+  },
+  'order-detail': {
+    id: 'Menu.Order.Detail',
+    defaultMessage: 'Detail',
+  },
+  transaction: {
+    id: 'Menu.Transaction',
+    defaultMessage: 'Transaction',
+  },
+  'transaction-list': {
+    id: 'Menu.Transaction.List',
+    defaultMessage: 'Transaction List',
+  },
+});
 
 const { Content, Header, Footer } = Layout;
 const { check } = Authorized;
@@ -100,9 +143,9 @@ class BasicLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = "Cello Operator Dashboard";
+    let title = intl.formatMessage(messages.name);
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - Cello Operator Dashboard`;
+      title = `${intl.formatMessage(messages[routerData[pathname].name])} - ${intl.formatMessage(messages.name)}`;
     }
     return title;
   }
@@ -184,7 +227,7 @@ class BasicLayout extends React.PureComponent {
             <GlobalFooter
               copyright={
                 <Fragment>
-                  Copyright <Icon type="copyright" /> Hyperledger Cello
+                  Copyright <Icon type="copyright" /> Chaconne
                 </Fragment>
               }
             />

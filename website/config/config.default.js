@@ -33,7 +33,7 @@ module.exports = appInfo => {
       invokePeers: ['peer0.org1.example.com'],
       queryPeer: 'peer0.org1.example.com',
       orgName: 'org1',
-      chaincodeName: '408a9971312243738f14b575e7ae6701-5f52457a53b0b5005b516cda',
+      chaincodeName: '090e9533000c4f4c871148b49f9ca42d-5f54bc167e7a5a005c2d1da9',
       admins: [
         {
           username: 'admin',

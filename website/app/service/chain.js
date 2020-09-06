@@ -102,7 +102,6 @@ class ChainService extends Service {
       organizations,
       peers,
     });
-    console.log(JSON.stringify(network));
     return network;
   }
   async generateNetwork() {

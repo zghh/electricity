@@ -12,6 +12,34 @@ const messages = defineMessages({
     id: 'Home',
     defaultMessage: 'Home',
   },
+  order: {
+    id: 'Menu.Order',
+    defaultMessage: 'Order',
+  },
+  'order-currentOrders': {
+    id: 'Menu.Order.CurrentOrders',
+    defaultMessage: 'Current Orders',
+  },
+  'order-myOrders': {
+    id: 'Menu.Order.MyOrders',
+    defaultMessage: 'My Orders',
+  },
+  'order-newOrder': {
+    id: 'Menu.Order.NewOrder',
+    defaultMessage: 'New Order',
+  },
+  'order-detail': {
+    id: 'Menu.Order.Detail',
+    defaultMessage: 'Detail',
+  },
+  transaction: {
+    id: 'Menu.Transaction',
+    defaultMessage: 'Transaction',
+  },
+  'transaction-list': {
+    id: 'Menu.Transaction.List',
+    defaultMessage: 'Transaction List',
+  },
 });
 
 const { TabPane } = Tabs;
@@ -81,7 +109,7 @@ class PageHeader extends PureComponent {
           {createElement(
             isLinkable ? linkElement : 'span',
             { [linkElement === 'a' ? 'href' : 'to']: url },
-            currentBreadcrumb.name
+            intl.formatMessage(messages[currentBreadcrumb.name])
           )}
         </Breadcrumb.Item>
       ) : null;

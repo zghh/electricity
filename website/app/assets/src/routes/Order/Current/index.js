@@ -4,12 +4,67 @@ import { connect } from 'dva';
 import { routerRedux, Link } from 'dva/router';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
+import { IntlProvider, defineMessages } from 'react-intl';
+import { getLocale } from "../../../utils/utils";
 
 import PageHeaderLayout from '../../../layouts/PageHeaderLayout';
 import styles from './index.less';
 
 const format = require("string-format");
 format.extend(String.prototype);
+
+const currentLocale = getLocale();
+const intlProvider = new IntlProvider(
+  { locale: currentLocale.locale, messages: currentLocale.messages },
+  {}
+);
+const { intl } = intlProvider.getChildContext();
+const messages = defineMessages({
+  title: {
+    id: 'Title.CurrentOrders',
+    defaultMessage: 'Current Order List',
+  },
+  content: {
+    id: 'Content.CurrentOrders',
+    defaultMessage: 'You can view the current orders here.',
+  },
+  sellerOrderList: {
+    id: 'Order.CurrentOrders.SellerOrderList',
+    defaultMessage: 'Seller Order List',
+  },
+  buyerOrderList: {
+    id: 'Order.CurrentOrders.BuyerOrderList',
+    defaultMessage: 'Buyer Order List',
+  },
+  orderId: {
+    id: 'Order.CurrentOrders.OrderId',
+    defaultMessage: 'Order Id',
+  },
+  userId: {
+    id: 'Order.CurrentOrders.UserId',
+    defaultMessage: 'User Id',
+  },
+  energyType: {
+    id: 'Order.CurrentOrders.EnergyType',
+    defaultMessage: 'Energy Type',
+  },
+  price: {
+    id: 'Order.CurrentOrders.Price',
+    defaultMessage: 'Price',
+  },
+  amount: {
+    id: 'Order.CurrentOrders.Amount',
+    defaultMessage: 'Amount',
+  },
+  time: {
+    id: 'Order.CurrentOrders.Time',
+    defaultMessage: 'Time',
+  },
+  new: {
+    id: 'Order.CurrentOrders.New',
+    defaultMessage: 'New',
+  },
+});
 
 @connect(({ order, loading }) => ({
   order,
@@ -33,7 +88,7 @@ export default class CurrentOrders extends PureComponent {
     const { order: { sellerOrders, buyerOrders }, loading } = this.props;
     const dataColumns = [
       {
-        title: 'Id',
+        title: intl.formatMessage(messages.orderId),
         dataIndex: 'orderId',
         key: 'orderId',
         render: text => (
@@ -41,27 +96,27 @@ export default class CurrentOrders extends PureComponent {
         ),
       },
       {
-        title: 'UserId',
+        title: intl.formatMessage(messages.userId),
         dataIndex: 'userId',
         key: 'userId',
       },
       {
-        title: 'Energy Type',
+        title: intl.formatMessage(messages.energyType),
         dataIndex: 'energyType',
         key: 'energyType',
       },
       {
-        title: 'Price',
+        title: intl.formatMessage(messages.price),
         dataIndex: 'price',
         key: 'price',
       },
       {
-        title: 'Amount',
+        title: intl.formatMessage(messages.amount),
         dataIndex: 'remainAmount',
         key: 'remainAmount',
       },
       {
-        title: 'Time',
+        title: intl.formatMessage(messages.time),
         dataIndex: 'time',
         key: 'time',
         render: text => (
@@ -74,7 +129,7 @@ export default class CurrentOrders extends PureComponent {
     const content = (
       <div className={styles.pageHeaderContent}>
         <p>
-          You can view the current orders here.
+          {intl.formatMessage(messages.content)}
         </p>
       </div>
     );
@@ -82,21 +137,21 @@ export default class CurrentOrders extends PureComponent {
     const extraContent = (
       <div className={styles.extraImg}>
         <QueueAnim>
-          <Icon key="smart-contract" type="link" style={{ fontSize: 80 }} />
+          <Icon key="current-orders" type="code-o" style={{ fontSize: 80 }} />
         </QueueAnim>
       </div>
     );
 
     return (
-      <PageHeaderLayout title="Current Order List" content={content} extraContent={extraContent}>
+      <PageHeaderLayout title={intl.formatMessage(messages.title)} content={content} extraContent={extraContent}>
         <Card
-          title="Seller Order List"
+          title={intl.formatMessage(messages.sellerOrderList)}
           bordered={false}
         >
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.onNewOrder('seller')}>
-                New
+                {intl.formatMessage(messages.new)}
               </Button>
             </div>
             <Table
@@ -108,14 +163,14 @@ export default class CurrentOrders extends PureComponent {
           </div>
         </Card>
         <Card
-          title="Buyer Order List"
+          title={intl.formatMessage(messages.buyerOrderList)}
           style={{ marginTop: 20 }}
           bordered={false}
         >
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => this.onNewOrder('buyer')}>
-                New
+                {intl.formatMessage(messages.new)}
               </Button>
             </div>
             <Table

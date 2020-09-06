@@ -2,26 +2,26 @@ import { isUrl } from "../utils/utils";
 
 const menuData = [
   {
-    name: "Order",
+    name: "order",
     path: "order",
     icon: "code-o",
     children: [
       {
-        name: "Current orders",
+        name: "order-currentOrders",
         path: "current",
       },
       {
-        name: "My orders",
+        name: "order-myOrders",
         path: "my",
       },
       {
-        name: "New Order",
+        name: "order-newOrder",
         path: "new/:type",
         hideInMenu: true,
         hideInBreadcrumb: false,
       },
       {
-        name: "Order Detail",
+        name: "order-detail",
         path: "detail/:id",
         hideInMenu: true,
         hideInBreadcrumb: false,
@@ -29,12 +29,12 @@ const menuData = [
     ],
   },
   {
-    name: "Transaction",
+    name: "transaction",
     path: "transaction",
     icon: "link",
     children: [
       {
-        name: "List",
+        name: "transaction-list",
         path: "index",
       },
     ],

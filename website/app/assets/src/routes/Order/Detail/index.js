@@ -6,8 +6,83 @@ import DescriptionList from 'components/DescriptionList';
 import PageHeaderLayout from '../../../layouts/PageHeaderLayout';
 import styles from './index.less';
 import moment from 'moment';
+import { IntlProvider, defineMessages } from 'react-intl';
+import { getLocale } from "../../../utils/utils";
 
 const { Description } = DescriptionList;
+
+const currentLocale = getLocale();
+const intlProvider = new IntlProvider(
+  { locale: currentLocale.locale, messages: currentLocale.messages },
+  {}
+);
+const { intl } = intlProvider.getChildContext();
+const messages = defineMessages({
+  title: {
+    id: 'Title.Detail',
+    defaultMessage: 'Order Id:',
+  },
+  type: {
+    id: 'Order.Detail.Type',
+    defaultMessage: 'Order Type',
+  },
+  userId: {
+    id: 'Order.Detail.UserId',
+    defaultMessage: 'User Id',
+  },
+  energyType: {
+    id: 'Order.Detail.EnergyType',
+    defaultMessage: 'Energy Type',
+  },
+  price: {
+    id: 'Order.Detail.Price',
+    defaultMessage: 'Price',
+  },
+  amount: {
+    id: 'Order.Detail.Amount',
+    defaultMessage: 'Amount',
+  },
+  remainAmount: {
+    id: 'Order.Detail.RemainAmount',
+    defaultMessage: 'Remain Amount',
+  },
+  time: {
+    id: 'Order.Detail.Time',
+    defaultMessage: 'Create Time',
+  },
+  transactionList: {
+    id: 'Order.Detail.TransactionList',
+    defaultMessage: 'Transaction List',
+  },
+  id: {
+    id: 'Order.Detail.Id',
+    defaultMessage: 'Id',
+  },
+  sellerOrderId: {
+    id: 'Order.Detail.SellerOrderId',
+    defaultMessage: 'Seller Order Id',
+  },
+  buyerOrderId: {
+    id: 'Order.Detail.BuyerOrderId',
+    defaultMessage: 'Buyer Order Id',
+  },
+  sellerId: {
+    id: 'Order.Detail.SellerId',
+    defaultMessage: 'Seller Id',
+  },
+  buyerId: {
+    id: 'Order.Detail.BuyerId',
+    defaultMessage: 'Buyer Id',
+  },
+  seller: {
+    id: 'Order.Detail.Seller',
+    defaultMessage: 'Seller',
+  },
+  buyer: {
+    id: 'Order.Detail.Buyer',
+    defaultMessage: 'Buyer',
+  },
+});
 
 @connect(({ order, loading }) => ({
   order,
@@ -32,7 +107,7 @@ export default class Detail extends Component {
     const { order: { orderInfo, transactions }, loading } = this.props;
     const dataColumns = [
       {
-        title: 'Id',
+        title: intl.formatMessage(messages.id),
         dataIndex: 'transactionId',
         key: 'transactionId',
         render: text => text.length > 20 ? (
@@ -42,7 +117,7 @@ export default class Detail extends Component {
         ) : text,
       },
       {
-        title: 'Seller Order Id',
+        title: intl.formatMessage(messages.sellerOrderId),
         dataIndex: 'sellerOrderId',
         key: 'sellerOrderId',
         render: text => text.length > 20 ? (
@@ -52,7 +127,7 @@ export default class Detail extends Component {
         ) : text,
       },
       {
-        title: 'Buyer Order Id',
+        title: intl.formatMessage(messages.buyerOrderId),
         dataIndex: 'buyerOrderId',
         key: 'buyerOrderId',
         render: text => text.length > 20 ? (
@@ -62,32 +137,32 @@ export default class Detail extends Component {
         ) : text,
       },
       {
-        title: 'Seller Id',
+        title: intl.formatMessage(messages.sellerId),
         dataIndex: 'sellerId',
         key: 'sellerId',
       },
       {
-        title: 'Buyer Id',
+        title: intl.formatMessage(messages.buyerId),
         dataIndex: 'buyerId',
         key: 'buyerId',
       },
       {
-        title: 'Energy Type',
+        title: intl.formatMessage(messages.energyType),
         dataIndex: 'energyType',
         key: 'energyType',
       },
       {
-        title: 'Price',
+        title: intl.formatMessage(messages.price),
         dataIndex: 'price',
         key: 'price',
       },
       {
-        title: 'Amount',
+        title: intl.formatMessage(messages.amount),
         dataIndex: 'amount',
         key: 'amount',
       },
       {
-        title: 'Time',
+        title: intl.formatMessage(messages.time),
         dataIndex: 'time',
         key: 'time',
         render: text => (
@@ -98,20 +173,19 @@ export default class Detail extends Component {
 
     const description = (
       <DescriptionList className={styles.headerList} size="small" col="2">
-        <Description term="Order Id">{orderInfo.orderId}</Description>
-        <Description term="Type">{orderInfo.type === 1 ? 'seller' : 'buyer'}</Description>
-        <Description term="User Id">{orderInfo.userId}</Description>
-        <Description term="Energy Type">{orderInfo.energyType}</Description>
-        <Description term="Price">{orderInfo.price}</Description>
-        <Description term="Amount">{orderInfo.amount}</Description>
-        <Description term="Remain Amount">{orderInfo.remainAmount}</Description>
-        <Description term="Time">{moment(orderInfo.time * 1000).format('YYYY-MM-DD HH:mm:ss')}</Description>
+        <Description term={intl.formatMessage(messages.type)}>{orderInfo.type === 1 ? intl.formatMessage(messages.seller) : intl.formatMessage(messages.buyer)}</Description>
+        <Description term={intl.formatMessage(messages.userId)}>{orderInfo.userId}</Description>
+        <Description term={intl.formatMessage(messages.energyType)}>{orderInfo.energyType}</Description>
+        <Description term={intl.formatMessage(messages.price)}>{orderInfo.price}</Description>
+        <Description term={intl.formatMessage(messages.amount)}>{orderInfo.amount}</Description>
+        <Description term={intl.formatMessage(messages.remainAmount)}>{orderInfo.remainAmount}</Description>
+        <Description term={intl.formatMessage(messages.time)}>{moment(orderInfo.time * 1000).format('YYYY-MM-DD HH:mm:ss')}</Description>
       </DescriptionList>
     );
 
     return (
       <PageHeaderLayout
-        title={`Order Id: ${orderInfo.orderId}`}
+        title={`${intl.formatMessage(messages.title)} ${orderInfo.orderId}`}
         logo={
           <Icon type="code-o" style={{ fontSize: 30, color: '#40a9ff' }} />
         }
@@ -119,7 +193,7 @@ export default class Detail extends Component {
         content={description}
       >
         <Card
-          title="Transactions List"
+          title={intl.formatMessage(messages.transactionList)}
           bordered={false}
         >
           <div className={styles.tableList}>

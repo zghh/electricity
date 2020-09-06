@@ -1,7 +1,7 @@
 'use strict';
 
 const Service = require('egg').Service;
-const roles = ['普通消费者', '生产消费者', '传统能源公司'];
+const roles = ['normal', 'productive', 'traditional'];
 
 class UserService extends Service {
   async login(user) {
@@ -25,6 +25,16 @@ class UserService extends Service {
       }
     }
     return null;
+  }
+
+  async register() {
+    const { ctx, config } = this;
+    const { invokePeers, channelName, chaincodeName, orgName } = config.chain;
+    const username = config.chain.admins[0].username;
+    const user = ctx.request.body;
+    const network = await ctx.service.chain.generateNetwork();
+    const arg = JSON.stringify(user);
+    return await ctx.invokeChainCode(network, invokePeers, channelName, chaincodeName, "register", [arg], username, orgName);
   }
 }
 

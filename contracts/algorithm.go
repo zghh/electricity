@@ -153,7 +153,7 @@ func addTransaction(stub shim.ChaincodeStubInterface, sellerOrder *Order, buyerO
 	}
 
 	buyerOrderTransactions := []Transaction{}
-	key = fmt.Sprintf("%s-%s", orderTransactionsPrefix, sellerOrder.OrderId)
+	key = fmt.Sprintf("%s-%s", orderTransactionsPrefix, buyerOrder.OrderId)
 	if _, err := GetState(stub, key, &buyerOrderTransactions); err != nil {
 		return errors.Wrapf(err, "Get from orderTransactions table error: %s", key)
 	}

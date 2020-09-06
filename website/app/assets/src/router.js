@@ -30,7 +30,7 @@ function RouterConfig({ history, app }) {
             <AuthorizedRoute
               path="/"
               render={props => <BasicLayout {...props} />}
-              authority={['普通消费者', '生产消费者', '传统能源公司']}
+              authority={['normal', 'productive', 'traditional']}
               redirectPath="/user/login"
             />
           </Switch>

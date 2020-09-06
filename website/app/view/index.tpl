@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cello User Dashboard</title>
+    <title>Electricity System</title>
     <link type="text/css" rel="stylesheet" href="{{webRoot}}static/index.css">
     <link rel="icon" type="image/x-icon" href="{{webRoot}}static/logo.ico" />
 </head>
@@ -11,7 +11,7 @@
 <script>
   window.webRoot = "{{webRoot}}";
   window.csrf = "{{ ctx.csrf |  safe }}";
-  localStorage.setItem('cello-authority', "{{ authority }}");
+  localStorage.setItem('electricity-authority', "{{ authority }}");
   window.id = "{{ id }}";
   window.username = "{{ username }}";
 </script>

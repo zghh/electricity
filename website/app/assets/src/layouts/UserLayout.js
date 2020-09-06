@@ -6,11 +6,53 @@ import { Icon } from "antd";
 import GlobalFooter from "../components/GlobalFooter";
 import styles from "./UserLayout.less";
 import logo from "../assets/logo.svg";
-import { getRoutes } from "../utils/utils";
+import { getRoutes, getLocale } from "../utils/utils";
+import { IntlProvider, defineMessages } from 'react-intl';
+
+const currentLocale = getLocale();
+const intlProvider = new IntlProvider(
+  { locale: currentLocale.locale, messages: currentLocale.messages },
+  {}
+);
+const { intl } = intlProvider.getChildContext();
+const messages = defineMessages({
+  name: {
+    id: 'Name',
+    defaultMessage: 'Electricity System',
+  },
+  order: {
+    id: 'Menu.Order',
+    defaultMessage: 'Order',
+  },
+  'order-currentOrders': {
+    id: 'Menu.Order.CurrentOrders',
+    defaultMessage: 'Current Orders',
+  },
+  'order-myOrders': {
+    id: 'Menu.Order.MyOrders',
+    defaultMessage: 'My Orders',
+  },
+  'order-newOrder': {
+    id: 'Menu.Order.NewOrder',
+    defaultMessage: 'New Order',
+  },
+  'order-detail': {
+    id: 'Menu.Order.Detail',
+    defaultMessage: 'Detail',
+  },
+  transaction: {
+    id: 'Menu.Transaction',
+    defaultMessage: 'Transaction',
+  },
+  'transaction-list': {
+    id: 'Menu.Transaction.List',
+    defaultMessage: 'Transaction List',
+  },
+});
 
 const copyright = (
   <Fragment>
-    Copyright <Icon type="copyright" /> Hyperledger Cello
+    Copyright <Icon type="copyright" /> Chaconne
   </Fragment>
 );
 
@@ -18,9 +60,9 @@ class UserLayout extends React.PureComponent {
   getPageTitle() {
     const { routerData, location } = this.props;
     const { pathname } = location;
-    let title = "Cello User Dashboard";
+    let title = intl.formatMessage(messages.name);
     if (routerData[pathname] && routerData[pathname].name) {
-      title = `${routerData[pathname].name} - Cello User Dashboard`;
+      title = `${intl.formatMessage(messages[routerData[pathname].name])} - ${intl.formatMessage(messages.name)}`;
     }
     return title;
   }
@@ -139,10 +181,10 @@ class UserLayout extends React.PureComponent {
               <div className={styles.header}>
                 <Link to="/">
                   <img alt="logo" className={styles.logo} src={logo} />
-                  <span className={styles.title}>Cello User Dashboard</span>
+                  <span className={styles.title}>{intl.formatMessage(messages.name)}</span>
                 </Link>
               </div>
-              <div className={styles.desc}>Hyperledger Baas System</div>
+              <div className={styles.desc}></div>
             </div>
             <Switch>
               {getRoutes(match.path, routerData).map(item => (

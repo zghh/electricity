@@ -4,9 +4,68 @@ import { connect } from 'dva';
 import { Link } from 'dva/router';
 import QueueAnim from 'rc-queue-anim';
 import moment from 'moment';
+import { IntlProvider, defineMessages } from 'react-intl';
+import { getLocale } from "../../../utils/utils";
 
 import PageHeaderLayout from '../../../layouts/PageHeaderLayout';
 import styles from './index.less';
+
+const currentLocale = getLocale();
+const intlProvider = new IntlProvider(
+  { locale: currentLocale.locale, messages: currentLocale.messages },
+  {}
+);
+const { intl } = intlProvider.getChildContext();
+const messages = defineMessages({
+  title: {
+    id: 'Title.MyOrders',
+    defaultMessage: 'My Order List',
+  },
+  content: {
+    id: 'Content.MyOrders',
+    defaultMessage: 'You can view the your orders here.',
+  },
+  myOrderList: {
+    id: 'Order.MyOrders.MyOrderList',
+    defaultMessage: 'My Order List',
+  },
+  orderId: {
+    id: 'Order.MyOrders.OrderId',
+    defaultMessage: 'Order Id',
+  },
+  type: {
+    id: 'Order.MyOrders.Type',
+    defaultMessage: 'Order Type',
+  },
+  energyType: {
+    id: 'Order.MyOrders.EnergyType',
+    defaultMessage: 'Energy Type',
+  },
+  price: {
+    id: 'Order.MyOrders.Price',
+    defaultMessage: 'Price',
+  },
+  amount: {
+    id: 'Order.MyOrders.Amount',
+    defaultMessage: 'Amount',
+  },
+  remainAmount: {
+    id: 'Order.MyOrders.RemainAmount',
+    defaultMessage: 'Remain Amount',
+  },
+  time: {
+    id: 'Order.MyOrders.Time',
+    defaultMessage: 'Create Time',
+  },
+  seller: {
+    id: 'Order.New.Seller',
+    defaultMessage: 'Seller',
+  },
+  buyer: {
+    id: 'Order.New.Buyer',
+    defaultMessage: 'Buyer',
+  },
+});
 
 @connect(({ order, loading }) => ({
   order,
@@ -23,7 +82,7 @@ export default class MyOrders extends PureComponent {
     const { order: { myOrders }, loading } = this.props;
     const dataColumns = [
       {
-        title: 'Id',
+        title: intl.formatMessage(messages.orderId),
         dataIndex: 'orderId',
         key: 'orderId',
         render: text => (
@@ -31,35 +90,35 @@ export default class MyOrders extends PureComponent {
         ),
       },
       {
-        title: 'Type',
+        title: intl.formatMessage(messages.type),
         dataIndex: 'type',
         key: 'type',
         render: text => (
-          <div>{text == 1 ? 'seller' : 'buyer'}</div>
+          <div>{text == 1 ? intl.formatMessage(messages.seller) : intl.formatMessage(messages.buyer)}</div>
         ),
       },
       {
-        title: 'Energy Type',
+        title: intl.formatMessage(messages.energyType),
         dataIndex: 'energyType',
         key: 'energyType',
       },
       {
-        title: 'Price',
+        title: intl.formatMessage(messages.price),
         dataIndex: 'price',
         key: 'price',
       },
       {
-        title: 'Amount',
+        title: intl.formatMessage(messages.amount),
         dataIndex: 'amount',
         key: 'amount',
       },
       {
-        title: 'RemainAmount',
+        title: intl.formatMessage(messages.remainAmount),
         dataIndex: 'remainAmount',
         key: 'remainAmount',
       },
       {
-        title: 'Time',
+        title: intl.formatMessage(messages.time),
         dataIndex: 'time',
         key: 'time',
         render: text => (
@@ -71,7 +130,7 @@ export default class MyOrders extends PureComponent {
     const content = (
       <div className={styles.pageHeaderContent}>
         <p>
-          You can view the your orders here.
+          {intl.formatMessage(messages.content)}
         </p>
       </div>
     );
@@ -79,15 +138,15 @@ export default class MyOrders extends PureComponent {
     const extraContent = (
       <div className={styles.extraImg}>
         <QueueAnim>
-          <Icon key="smart-contract" type="link" style={{ fontSize: 80 }} />
+          <Icon key="my-orders" type="code-o" style={{ fontSize: 80 }} />
         </QueueAnim>
       </div>
     );
 
     return (
-      <PageHeaderLayout title="My Order List" content={content} extraContent={extraContent}>
+      <PageHeaderLayout title={intl.formatMessage(messages.title)} content={content} extraContent={extraContent}>
         <Card
-          title="My Order List"
+          title={intl.formatMessage(messages.myOrderList)}
           bordered={false}
         >
           <div className={styles.tableList}>
