@@ -1,0 +1,14 @@
+version: "3.2"
+
+services:
+  website:
+    image: zhouguohao/electricity-website
+    container_name: electricity-website
+    ports:
+      - "8081:8081"
+    environment:
+      - NODE_ENV=production
+      - DEBUG=node:*
+      - DEV=$DEV
+      - LOG_LEVEL=INFO
+      - CHAINCODE_NAME=df27757f4bac4cafa1b2ae06a356f1c8-5f55d4c188fc9500517421f6

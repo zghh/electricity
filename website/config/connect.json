@@ -5,9 +5,9 @@
   "client": {
     "organization": "org1",
     "credentialStore": {
-      "path": "D:/data/code/go/src/github.com/zghh/electricity/data/chains/client-kvs",
+      "path": "/var/data/chains/client-kvs",
       "cryptoStore": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/data/chains/client-cvs"
+        "path": "/var/data/chains/client-cvs"
       },
       "wallet": "wallet"
     }
@@ -51,7 +51,7 @@
         "ssl-target-name-override": "orderer.example.com"
       },
       "tlsCACerts": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt"
+        "path": "/var/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/ca.crt"
       },
       "url": "grpcs://81.70.23.98:8050"
     }
@@ -67,7 +67,7 @@
         "enrollSecret": "adminpw"
       }],
       "tlsCACerts": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
+        "path": "/var/crypto-config/peerOrganizations/org1.example.com/ca/ca.org1.example.com-cert.pem"
       },
       "url": "https://81.70.23.98:7850"
     },
@@ -81,7 +81,7 @@
         "enrollSecret": "adminpw"
       }],
       "tlsCACerts": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem"
+        "path": "/var/crypto-config/peerOrganizations/org2.example.com/ca/ca.org2.example.com-cert.pem"
       },
       "url": "https://81.70.23.98:7950"
     }
@@ -89,7 +89,7 @@
   "organizations": {
     "org1": {
       "adminPrivateKey": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/admin_sk"
+        "path": "/var/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/keystore/admin_sk"
       },
       "certificateAuthorities": [
         "ca-org1"
@@ -100,12 +100,12 @@
         "peer1.org1.example.com"
       ],
       "signedCert": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
+        "path": "/var/crypto-config/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp/signcerts/Admin@org1.example.com-cert.pem"
       }
     },
     "org2": {
       "adminPrivateKey": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/admin_sk"
+        "path": "/var/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/keystore/admin_sk"
       },
       "certificateAuthorities": [
         "ca-org2"
@@ -116,7 +116,7 @@
         "peer1.org2.example.com"
       ],
       "signedCert": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem"
+        "path": "/var/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/signcerts/Admin@org2.example.com-cert.pem"
       }
     }
   },
@@ -127,7 +127,7 @@
         "ssl-target-name-override": "peer0.org1.example.com"
       },
       "tlsCACerts": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
+        "path": "/var/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
       }
     },
     "peer1.org1.example.com": {
@@ -136,7 +136,7 @@
         "ssl-target-name-override": "peer1.org1.example.com"
       },
       "tlsCACerts": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
+        "path": "/var/crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls/ca.crt"
       }
     },
     "peer0.org2.example.com": {
@@ -145,7 +145,7 @@
         "ssl-target-name-override": "peer0.org2.example.com"
       },
       "tlsCACerts": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
+        "path": "/var/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt"
       }
     },
     "peer1.org2.example.com": {
@@ -154,7 +154,7 @@
         "ssl-target-name-override": "peer1.org2.example.com"
       },
       "tlsCACerts": {
-        "path": "D:/data/code/go/src/github.com/zghh/electricity/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
+        "path": "/var/crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls/ca.crt"
       }
     }
   }
