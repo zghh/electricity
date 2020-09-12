@@ -11,7 +11,12 @@ type Electricity struct {
 }
 
 func (t *Electricity) Init(stub shim.ChaincodeStubInterface) pb.Response {
-	return shim.Success(nil)
+	err := initChaincode(stub)
+	if err != nil {
+		return shim.Error(err.Error())
+	} else {
+		return shim.Success(nil)
+	}
 }
 
 func (t *Electricity) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
@@ -35,6 +40,10 @@ func (t *Electricity) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		result, err = queryOrderInfo(stub, args)
 	case "queryTransactions":
 		result, err = queryTransactions(stub, args)
+	case "queryUsers":
+		result, err = queryUsers(stub, args)
+	default:
+		err = fmt.Errorf("Invalid function name: %s", function)
 	}
 	if err != nil {
 		return shim.Error(err.Error())

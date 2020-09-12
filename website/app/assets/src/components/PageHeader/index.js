@@ -40,6 +40,14 @@ const messages = defineMessages({
     id: 'Menu.Transaction.List',
     defaultMessage: 'Transaction List',
   },
+  user: {
+    id: 'Menu.User',
+    defaultMessage: 'User',
+  },
+  'user-list': {
+    id: 'Menu.User.List',
+    defaultMessage: 'User List',
+  },
 });
 
 const { TabPane } = Tabs;

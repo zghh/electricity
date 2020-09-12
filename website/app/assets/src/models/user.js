@@ -1,4 +1,4 @@
-import { queryCurrent } from "../services/user";
+import { queryCurrent, queryUsers } from "../services/user";
 
 export default {
   namespace: "user",
@@ -6,6 +6,7 @@ export default {
   state: {
     list: [],
     currentUser: {},
+    userList: [],
   },
 
   effects: {
@@ -14,6 +15,13 @@ export default {
       yield put({
         type: "saveCurrentUser",
         payload: response,
+      });
+    },
+    *list(_, { call, put }) {
+      const response = yield call(queryUsers);
+      yield put({
+        type: "setUserList",
+        payload: response.data,
       });
     },
   },
@@ -33,6 +41,12 @@ export default {
           notifyCount: action.payload,
         },
       };
+    },
+    setUserList(state, action) {
+      return {
+        ...state,
+        userList: action.payload,
+      }
     },
   },
 };

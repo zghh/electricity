@@ -187,7 +187,7 @@ export default class Detail extends Component {
       <PageHeaderLayout
         title={`${intl.formatMessage(messages.title)} ${orderInfo.orderId}`}
         logo={
-          <Icon type="code-o" style={{ fontSize: 30, color: '#40a9ff' }} />
+          <Icon type="form" style={{ fontSize: 30, color: '#40a9ff' }} />
         }
         loading={loading}
         content={description}

@@ -18,7 +18,7 @@ const { intl } = intlProvider.getChildContext();
 const messages = defineMessages({
   name: {
     id: 'Name',
-    defaultMessage: 'Electricity System',
+    defaultMessage: 'Blockchain Power Trading Platform',
   },
   order: {
     id: 'Menu.Order',
@@ -47,6 +47,14 @@ const messages = defineMessages({
   'transaction-list': {
     id: 'Menu.Transaction.List',
     defaultMessage: 'Transaction List',
+  },
+  user: {
+    id: 'Menu.User',
+    defaultMessage: 'User',
+  },
+  'user-list': {
+    id: 'Menu.User.List',
+    defaultMessage: 'User List',
   },
 });
 

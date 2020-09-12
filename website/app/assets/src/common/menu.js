@@ -4,7 +4,7 @@ const menuData = [
   {
     name: "order",
     path: "order",
-    icon: "code-o",
+    icon: "form",
     children: [
       {
         name: "order-currentOrders",
@@ -31,11 +31,22 @@ const menuData = [
   {
     name: "transaction",
     path: "transaction",
-    icon: "link",
+    icon: "transaction",
     children: [
       {
         name: "transaction-list",
         path: "index",
+      },
+    ],
+  },
+  {
+    name: "user",
+    path: "users",
+    icon: "user",
+    children: [
+      {
+        name: "user-list",
+        path: "list",
       },
     ],
   },

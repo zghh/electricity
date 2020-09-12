@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Electricity System</title>
+    <title>Blockchain Power Trading Platform</title>
     <link type="text/css" rel="stylesheet" href="{{webRoot}}static/index.css">
     <link rel="icon" type="image/x-icon" href="{{webRoot}}static/logo.ico" />
 </head>

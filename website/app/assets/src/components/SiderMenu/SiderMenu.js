@@ -19,7 +19,7 @@ const { intl } = intlProvider.getChildContext();
 const messages = defineMessages({
   name: {
     id: 'Name',
-    defaultMessage: 'Electricity System',
+    defaultMessage: 'Blockchain Power Trading Platform',
   },
   order: {
     id: 'Menu.Order',
@@ -36,6 +36,10 @@ const messages = defineMessages({
   transaction: {
     id: 'Menu.Transaction',
     defaultMessage: 'Transaction',
+  },
+  user: {
+    id: 'Menu.User',
+    defaultMessage: 'User',
   },
 });
 
@@ -184,6 +188,7 @@ export default class SiderMenu extends PureComponent {
     }
     return menusData
       .filter(item => item.name && !item.hideInMenu)
+      .filter(item => !(window.id !== 'admin' && item.name === 'user'))
       .map(item => {
         // make dom
         const ItemDom = this.getSubMenuOrItem(item);
@@ -249,7 +254,7 @@ export default class SiderMenu extends PureComponent {
       >
         <div className={styles.logo} key="logo">
           <Link to="/">
-            <img src={logo} alt="logo" />
+            {/* <img src={logo} alt="logo" /> */}
             <h1>{intl.formatMessage(messages.name)}</h1>
           </Link>
         </div>

@@ -153,7 +153,7 @@ export default class Transaction extends PureComponent {
     const extraContent = (
       <div className={styles.extraImg}>
         <QueueAnim>
-          <Icon key="transactions" type="link" style={{ fontSize: 80 }} />
+          <Icon key="transactions" type="transaction" style={{ fontSize: 80 }} />
         </QueueAnim>
       </div>
     );

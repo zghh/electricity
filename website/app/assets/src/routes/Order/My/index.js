@@ -138,7 +138,7 @@ export default class MyOrders extends PureComponent {
     const extraContent = (
       <div className={styles.extraImg}>
         <QueueAnim>
-          <Icon key="my-orders" type="code-o" style={{ fontSize: 80 }} />
+          <Icon key="my-orders" type="form" style={{ fontSize: 80 }} />
         </QueueAnim>
       </div>
     );

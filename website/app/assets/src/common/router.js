@@ -98,6 +98,10 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ["transaction"], () =>
         import("../routes/Transaction")),
     },
+    "/users/list": {
+      component: dynamicWrapper(app, ["user"], () =>
+        import("../routes/User/List")),
+    },
     "/exception/403": {
       component: dynamicWrapper(app, [], () =>
         import("../routes/Exception/403")

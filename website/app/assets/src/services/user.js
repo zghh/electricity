@@ -36,3 +36,7 @@ export async function register(payload) {
     },
   });
 }
+
+export async function queryUsers() {
+  return request('/api/queryUsers');
+}

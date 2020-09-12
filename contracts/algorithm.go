@@ -8,6 +8,7 @@ import (
 )
 
 func findBuyerOrders(stub shim.ChaincodeStubInterface, order *Order) error {
+	m := map[string]([]byte){}
 	startKey := fmt.Sprintf("%s-%s-%015d-", buyerOrderPrefix, order.EnergyType, order.Price)
 	endKey := fmt.Sprintf("%s-%s-%015d-~", buyerOrderPrefix, order.EnergyType, MAX_PRICE)
 	iterator, err := stub.GetStateByRange(startKey, endKey)
@@ -30,7 +31,7 @@ func findBuyerOrders(stub shim.ChaincodeStubInterface, order *Order) error {
 		if buyerOrder.RemainAmount < amount {
 			amount = buyerOrder.RemainAmount
 		}
-		err = addTransaction(stub, order, &buyerOrder, amount)
+		err = addTransaction(stub, order, &buyerOrder, amount, m)
 		if err != nil {
 			return errors.Wrapf(err, "Add transaction error")
 		}
@@ -55,6 +56,7 @@ func findBuyerOrders(stub shim.ChaincodeStubInterface, order *Order) error {
 }
 
 func findSellerOrders(stub shim.ChaincodeStubInterface, order *Order) error {
+	m := map[string]([]byte){}
 	startKey := fmt.Sprintf("%s-%s-%015d-", sellerOrderPrefix, order.EnergyType, 0)
 	endKey := fmt.Sprintf("%s-%s-%015d-~", sellerOrderPrefix, order.EnergyType, order.Price)
 	iterator, err := stub.GetStateByRange(startKey, endKey)
@@ -77,7 +79,7 @@ func findSellerOrders(stub shim.ChaincodeStubInterface, order *Order) error {
 		if sellerOrder.RemainAmount < amount {
 			amount = sellerOrder.RemainAmount
 		}
-		err = addTransaction(stub, &sellerOrder, order, amount)
+		err = addTransaction(stub, &sellerOrder, order, amount, m)
 		if err != nil {
 			return errors.Wrapf(err, "Add transaction error")
 		}
@@ -101,7 +103,7 @@ func findSellerOrders(stub shim.ChaincodeStubInterface, order *Order) error {
 	return nil
 }
 
-func addTransaction(stub shim.ChaincodeStubInterface, sellerOrder *Order, buyerOrder *Order, amount int64) error {
+func addTransaction(stub shim.ChaincodeStubInterface, sellerOrder *Order, buyerOrder *Order, amount int64, m map[string]([]byte)) error {
 	timestamp, err := stub.GetTxTimestamp()
 	if err != nil {
 		return errors.Wrapf(err, "GetTxTimestamp error")
@@ -124,41 +126,41 @@ func addTransaction(stub shim.ChaincodeStubInterface, sellerOrder *Order, buyerO
 
 	sellerUserTransactions := []Transaction{}
 	key = fmt.Sprintf("%s-%s", userTransactionsPrefix, sellerOrder.UserId)
-	if _, err := GetState(stub, key, &sellerUserTransactions); err != nil {
+	if _, err := GetLatestState(stub, key, &sellerUserTransactions, m); err != nil {
 		return errors.Wrapf(err, "Get from userTransactions table error: %s", key)
 	}
 	sellerUserTransactions = append(sellerUserTransactions, transaction)
-	if err := PutState(stub, key, &sellerUserTransactions); err != nil {
+	if err := PutLatestState(stub, key, &sellerUserTransactions, m); err != nil {
 		return errors.Wrapf(err, "Add to userTransactions table error: %s", key)
 	}
 
 	buyerUserTransactions := []Transaction{}
 	key = fmt.Sprintf("%s-%s", userTransactionsPrefix, buyerOrder.UserId)
-	if _, err := GetState(stub, key, &buyerUserTransactions); err != nil {
+	if _, err := GetLatestState(stub, key, &buyerUserTransactions, m); err != nil {
 		return errors.Wrapf(err, "Get from userTransactions table error: %s", key)
 	}
 	buyerUserTransactions = append(buyerUserTransactions, transaction)
-	if err := PutState(stub, key, &buyerUserTransactions); err != nil {
+	if err := PutLatestState(stub, key, &buyerUserTransactions, m); err != nil {
 		return errors.Wrapf(err, "Add to userTransactions table error: %s", key)
 	}
 
 	sellerOrderTransactions := []Transaction{}
 	key = fmt.Sprintf("%s-%s", orderTransactionsPrefix, sellerOrder.OrderId)
-	if _, err := GetState(stub, key, &sellerOrderTransactions); err != nil {
+	if _, err := GetLatestState(stub, key, &sellerOrderTransactions, m); err != nil {
 		return errors.Wrapf(err, "Get from orderTransactions table error: %s", key)
 	}
 	sellerOrderTransactions = append(sellerOrderTransactions, transaction)
-	if err := PutState(stub, key, &sellerOrderTransactions); err != nil {
+	if err := PutLatestState(stub, key, &sellerOrderTransactions, m); err != nil {
 		return errors.Wrapf(err, "Add to orderTransactions table error: %s", key)
 	}
 
 	buyerOrderTransactions := []Transaction{}
 	key = fmt.Sprintf("%s-%s", orderTransactionsPrefix, buyerOrder.OrderId)
-	if _, err := GetState(stub, key, &buyerOrderTransactions); err != nil {
+	if _, err := GetLatestState(stub, key, &buyerOrderTransactions, m); err != nil {
 		return errors.Wrapf(err, "Get from orderTransactions table error: %s", key)
 	}
 	buyerOrderTransactions = append(buyerOrderTransactions, transaction)
-	if err := PutState(stub, key, &buyerOrderTransactions); err != nil {
+	if err := PutLatestState(stub, key, &buyerOrderTransactions, m); err != nil {
 		return errors.Wrapf(err, "Add to orderTransactions table error: %s", key)
 	}
 	return nil

@@ -8,4 +8,5 @@ module.exports = app => {
   app.router.post('/api/newOrder', app.controller.order.newOrder);
   app.router.get('/api/queryOrderInfo/:id', app.controller.order.queryOrderInfo);
   app.router.get('/api/queryTransactions/:id', app.controller.transaction.queryTransactions);
+  app.router.get('/api/queryUsers', app.controller.user.queryUsers);
 };

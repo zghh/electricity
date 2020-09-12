@@ -8,6 +8,21 @@ import (
 	"github.com/pkg/errors"
 )
 
+func initChaincode(stub shim.ChaincodeStubInterface) error {
+	user := User{
+		Id:       "admin",
+		Name:     "admin",
+		Type:     0,
+		Password: "1a1dc91c907325c69271ddf0c944bc72",
+	}
+
+	key := fmt.Sprintf("%s-%s", userPrefix, user.Id)
+	if err := PutState(stub, key, &user); err != nil {
+		return errors.Wrapf(err, "Add to user table error: %s", key)
+	}
+	return nil
+}
+
 /**
  * args[0] user
  */
@@ -300,4 +315,38 @@ func getCurrentOrders(stub shim.ChaincodeStubInterface, isBuyer bool, orders *[]
 		return errors.Wrapf(err, "Iterator error")
 	}
 	return nil
+}
+
+func queryUsers(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 0 {
+		return "", fmt.Errorf("Incorrect arguments")
+	}
+
+	users := []User{}
+	startKey := fmt.Sprintf("%s-", userPrefix)
+	endKey := fmt.Sprintf("%s-~", userPrefix)
+	iterator, err := stub.GetStateByRange(startKey, endKey)
+	if err != nil {
+		return "", errors.Wrapf(err, "GetStateByRange error")
+	}
+	defer iterator.Close()
+	for iterator.HasNext() {
+		result, err := iterator.Next()
+		if err != nil {
+			return "", errors.Wrapf(err, "Iterator error")
+		}
+		user := User{}
+		if err := json.Unmarshal(result.Value, &user); err != nil {
+			return "", errors.Wrapf(err, "Unmarshal error")
+		}
+		if user.Id != "admin" {
+			users = append(users, user)
+		}
+	}
+
+	jsonBytes, err := json.Marshal(&users)
+	if err != nil {
+		return "", errors.Wrapf(err, "Marshal error: %s", users)
+	}
+	return string(jsonBytes), nil
 }

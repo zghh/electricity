@@ -26,6 +26,19 @@ class UserController extends Controller {
       ctx.status = 400;
     }
   }
+
+  async queryUsers() {
+    const { ctx } = this;
+    if (!ctx.isAuthenticated() || ctx.user.role != 'admin') {
+      ctx.status = 401;
+      return;
+    }
+    const result = await ctx.service.user.queryUsers();
+    ctx.body = result;
+    if (!result.success) {
+      ctx.status = 400;
+    }
+  }
 }
 
 module.exports = UserController;
