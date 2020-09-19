@@ -108,6 +108,26 @@ class ChainService extends Service {
     const network = jsonfile.readFileSync('./config/connect.json');
     return network;
   }
+
+  async getBlocks(start, end) {
+    const { ctx, config } = this;
+    const { channelName } = config.chain;
+    const username = config.chain.admins[0].username;
+    const network = await ctx.service.chain.generateNetwork();
+    let blocks = {
+      success: true,
+      data: [],
+    };
+    for (let i = start; i < end; i++) {
+      const result = await ctx.queryBlock(network, channelName, username, i);
+      if (result.success) {
+        blocks.data.push(JSON.parse(JSON.stringify(result.data)));
+      } else {
+        return result;
+      }
+    }
+    return blocks;
+  }
 }
 
 module.exports = ChainService;

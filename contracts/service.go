@@ -229,6 +229,42 @@ func queryMyOrders(stub shim.ChaincodeStubInterface, args []string) (string, err
 	return string(jsonBytes), nil
 }
 
+func queryALLOrders(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 0 {
+		return "", fmt.Errorf("Incorrect arguments")
+	}
+
+	orders := []Order{}
+
+	startKey := fmt.Sprintf("%s-", orderPrefix)
+	endKey := fmt.Sprintf("%s-~", orderPrefix)
+	iterator, err := stub.GetStateByRange(startKey, endKey)
+	if err != nil {
+		return "", errors.Wrapf(err, "GetStateByRange error")
+	}
+	for iterator.HasNext() {
+		result, err := iterator.Next()
+		if err != nil {
+			return "", errors.Wrapf(err, "Iterator error")
+		}
+		order := Order{}
+		if err := json.Unmarshal(result.Value, &order); err != nil {
+			return "", errors.Wrapf(err, "Unmarshal error: %s", string(result.Value))
+		}
+		orders = append(orders, order)
+	}
+	err = iterator.Close()
+	if err != nil {
+		return "", errors.Wrapf(err, "Iterator error")
+	}
+
+	jsonBytes, err := json.Marshal(&orders)
+	if err != nil {
+		return "", errors.Wrapf(err, "Marshal error: %s", orders)
+	}
+	return string(jsonBytes), nil
+}
+
 /**
  * args[0] orderId
  */
@@ -283,6 +319,42 @@ func queryTransactions(stub shim.ChaincodeStubInterface, args []string) (string,
 		return "[]", nil
 	}
 	return string(result), nil
+}
+
+func queryALLTransactions(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 0 {
+		return "", fmt.Errorf("Incorrect arguments")
+	}
+
+	transactions := []Transaction{}
+
+	startKey := fmt.Sprintf("%s-", transactionPrefix)
+	endKey := fmt.Sprintf("%s-~", transactionPrefix)
+	iterator, err := stub.GetStateByRange(startKey, endKey)
+	if err != nil {
+		return "", errors.Wrapf(err, "GetStateByRange error")
+	}
+	for iterator.HasNext() {
+		result, err := iterator.Next()
+		if err != nil {
+			return "", errors.Wrapf(err, "Iterator error")
+		}
+		transaction := Transaction{}
+		if err := json.Unmarshal(result.Value, &transaction); err != nil {
+			return "", errors.Wrapf(err, "Unmarshal error: %s", string(result.Value))
+		}
+		transactions = append(transactions, transaction)
+	}
+	err = iterator.Close()
+	if err != nil {
+		return "", errors.Wrapf(err, "Iterator error")
+	}
+
+	jsonBytes, err := json.Marshal(&transactions)
+	if err != nil {
+		return "", errors.Wrapf(err, "Marshal error: %s", transactions)
+	}
+	return string(jsonBytes), nil
 }
 
 func getCurrentOrders(stub shim.ChaincodeStubInterface, isBuyer bool, orders *[]Order) error {

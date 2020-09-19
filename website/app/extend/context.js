@@ -7,4 +7,7 @@ module.exports = {
   get queryChainCode() {
     return this.app.queryChainCode;
   },
+  get queryBlock() {
+    return this.app.queryBlock;
+  },
 };

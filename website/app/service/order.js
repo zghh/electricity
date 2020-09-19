@@ -53,6 +53,33 @@ class OrderService extends Service {
     }
     return result;
   }
+  async queryALLOrders() {
+    const { ctx, config } = this;
+    const { queryPeer, channelName, chaincodeName } = config.chain;
+    const username = config.chain.admins[0].username;
+    const network = await ctx.service.chain.generateNetwork();
+    const result = await ctx.queryChainCode(network, queryPeer, channelName, chaincodeName, 'queryALLOrders', [], username);
+    if (result.success) {
+      result.data = JSON.parse(result.data);
+    }
+    return result;
+  }
+
+  async addOrder() {
+    const { ctx, config } = this;
+    const { invokePeers, channelName, chaincodeName, orgName } = config.chain;
+    const username = config.chain.admins[0].username;
+    const order = ctx.request.body;
+    let fcn = "";
+    if (order.type === 1) {
+      fcn = "submitSellerOrder";
+    } else {
+      fcn = "submitBuyerOrder";
+    }
+    const network = await ctx.service.chain.generateNetwork();
+    const arg = JSON.stringify(order);
+    return await ctx.invokeChainCode(network, invokePeers, channelName, chaincodeName, fcn, [arg], username, orgName);
+  }
 }
 
 module.exports = OrderService;

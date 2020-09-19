@@ -277,6 +277,35 @@ module.exports = app => {
     }
   }
 
+  async function queryBlock(network, channelName, username, blockNumber) {
+    try {
+      // first setup the client
+      const client = await getClientForOrg(network, username);
+      const channel = client.newChannel(channelName);
+      setupPeers(network, channel, client);
+      if (!channel) {
+        const message = util.format('Channel %s was not defined in the connection profile', channelName);
+        app.logger.error(message);
+        return {
+          success: false,
+          data: message,
+        };
+      }
+
+      return {
+        success: true,
+        data: await channel.queryBlock(blockNumber),
+      }
+    } catch (error) {
+      app.logger.error('Failed to query due to error: ' + error.stack ? error.stack : error);
+      return {
+        success: false,
+        data: error.toString(),
+      };
+    }
+  }
+
   app.invokeChainCode = invokeChainCode;
   app.queryChainCode = queryChainCode;
+  app.queryBlock = queryBlock;
 }

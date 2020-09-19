@@ -15,6 +15,23 @@ class TransactionController extends Controller {
       ctx.status = 400;
     }
   }
+
+  async getTransactions() {
+    const { ctx } = this;
+    const result = await ctx.service.transaction.queryTransactions(ctx.params.id);
+    ctx.body = result;
+    if (!result.success) {
+      ctx.status = 400;
+    }
+  }
+  async getAllTransactions() {
+    const { ctx } = this;
+    const result = await ctx.service.transaction.queryALLTransactions();
+    ctx.body = result;
+    if (!result.success) {
+      ctx.status = 400;
+    }
+  }
 }
 
 module.exports = TransactionController;

@@ -27,13 +27,21 @@ module.exports = appInfo => {
         '.tpl': 'nunjucks',
       },
     },
+    security: {
+      csrf: {
+        ignore: ctx => {
+          const reg = /\/api\/v1\/*/;
+          return reg.test(ctx.request.url);
+        },
+      },
+    },
     dataDir: '/var/data',
     chain: {
       channelName: 'mychannel',
       invokePeers: ['peer0.org1.example.com'],
       queryPeer: 'peer0.org1.example.com',
       orgName: 'org1',
-      chaincodeName: process.env.CHAINCODE_NAME || 'b01ba6ffeb44400bb53aa1c87b09249c-5f5c37ae1bd95d004228271d',
+      chaincodeName: process.env.CHAINCODE_NAME || '640406761ae44656917f718b8e47feb8-5f657520863853005796ff98',
       admins: [
         {
           username: 'admin',

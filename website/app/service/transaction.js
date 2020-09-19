@@ -14,6 +14,17 @@ class TransactionService extends Service {
     }
     return result;
   }
+  async queryALLTransactions() {
+    const { ctx, config } = this;
+    const { queryPeer, channelName, chaincodeName } = config.chain;
+    const username = config.chain.admins[0].username;
+    const network = await ctx.service.chain.generateNetwork();
+    const result = await ctx.queryChainCode(network, queryPeer, channelName, chaincodeName, 'queryALLTransactions', [], username);
+    if (result.success) {
+      result.data = JSON.parse(result.data);
+    }
+    return result;
+  }
 }
 
 module.exports = TransactionService;
