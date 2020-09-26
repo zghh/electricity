@@ -42,8 +42,8 @@ func (t *Electricity) Invoke(stub shim.ChaincodeStubInterface) pb.Response {
 		result, err = queryOrderInfo(stub, args)
 	case "queryTransactions":
 		result, err = queryTransactions(stub, args)
-	case "queryALLTransactions":
-		result, err = queryALLTransactions(stub, args)
+	case "queryTransactionsByTime":
+		result, err = queryTransactionsByTime(stub, args)
 	case "queryUsers":
 		result, err = queryUsers(stub, args)
 	default:

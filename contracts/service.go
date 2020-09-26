@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	"github.com/pkg/errors"
@@ -321,15 +322,33 @@ func queryTransactions(stub shim.ChaincodeStubInterface, args []string) (string,
 	return string(result), nil
 }
 
-func queryALLTransactions(stub shim.ChaincodeStubInterface, args []string) (string, error) {
-	if len(args) != 0 {
+/**
+ * args[0] startTime
+ * args[1] endTime
+ */
+func queryTransactionsByTime(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	var startKey string
+	var endKey string
+	if len(args) == 0 {
+		startKey = fmt.Sprintf("%s-", transactionPrefix)
+		endKey = fmt.Sprintf("%s-~", transactionPrefix)
+	} else if len(args) == 2 {
+		startTime, err := strconv.ParseInt(args[0], 10, 64)
+		if err != nil {
+			return "", errors.Wrapf(err, "Start time error: %s", args[0])
+		}
+		endTime, err := strconv.ParseInt(args[1], 10, 64)
+		if err != nil {
+			return "", errors.Wrapf(err, "End time error: %s", args[1])
+		}
+		startKey = fmt.Sprintf("%s-%015d-", transactionPrefix, startTime)
+		endKey = fmt.Sprintf("%s-%015d-~", transactionPrefix, endTime)
+	} else {
 		return "", fmt.Errorf("Incorrect arguments")
 	}
 
 	transactions := []Transaction{}
 
-	startKey := fmt.Sprintf("%s-", transactionPrefix)
-	endKey := fmt.Sprintf("%s-~", transactionPrefix)
 	iterator, err := stub.GetStateByRange(startKey, endKey)
 	if err != nil {
 		return "", errors.Wrapf(err, "GetStateByRange error")

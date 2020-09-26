@@ -119,7 +119,7 @@ func addTransaction(stub shim.ChaincodeStubInterface, sellerOrder *Order, buyerO
 		Amount:        amount,
 		Time:          timestamp.Seconds,
 	}
-	key := fmt.Sprintf("%s-%s", transactionPrefix, transaction.TransactionId)
+	key := fmt.Sprintf("%s-%015d-%s", transactionPrefix, transaction.Time, transaction.TransactionId)
 	if err := PutState(stub, key, &transaction); err != nil {
 		return errors.Wrapf(err, "Add to transaction table error: %s", key)
 	}

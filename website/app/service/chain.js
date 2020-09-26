@@ -128,6 +128,14 @@ class ChainService extends Service {
     }
     return blocks;
   }
+
+  async getInfo() {
+    const { ctx, config } = this;
+    const { channelName } = config.chain;
+    const username = config.chain.admins[0].username;
+    const network = await ctx.service.chain.generateNetwork();
+    return await ctx.queryInfo(network, channelName, username);
+  }
 }
 
 module.exports = ChainService;

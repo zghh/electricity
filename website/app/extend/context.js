@@ -10,4 +10,7 @@ module.exports = {
   get queryBlock() {
     return this.app.queryBlock;
   },
+  get queryInfo() {
+    return this.app.queryInfo;
+  },
 };

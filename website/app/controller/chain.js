@@ -11,6 +11,14 @@ class ChainController extends Controller {
       ctx.status = 400;
     }
   }
+  async getInfo() {
+    const { ctx } = this;
+    const result = await ctx.service.chain.getInfo();
+    ctx.body = result;
+    if (!result.success) {
+      ctx.status = 400;
+    }
+  }
 }
 
 module.exports = ChainController;

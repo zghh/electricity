@@ -32,6 +32,14 @@ class TransactionController extends Controller {
       ctx.status = 400;
     }
   }
+  async getTransactionsByTime() {
+    const { ctx } = this;
+    const result = await ctx.service.transaction.queryTransactionsByTime(ctx.params.startTime, ctx.params.endTime);
+    ctx.body = result;
+    if (!result.success) {
+      ctx.status = 400;
+    }
+  }
 }
 
 module.exports = TransactionController;

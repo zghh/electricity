@@ -16,6 +16,8 @@ module.exports = app => {
   app.router.post('/api/v1/order', app.controller.order.addOrder); // 添加订单
   app.router.get('/api/v1/order/:id', app.controller.order.getOrderInfo); // 查询订单详情
   app.router.get('/api/v1/transactions/all', app.controller.transaction.getAllTransactions); // 查询所有交易
+  app.router.get('/api/v1/transactions/time/:startTime/:endTime', app.controller.transaction.getTransactionsByTime); // 查询某段时间内的交易
   app.router.get('/api/v1/transactions/:id', app.controller.transaction.getTransactions); // 查询用户所有交易
   app.router.get('/api/v1/chain/blocks/:start/:end', app.controller.chain.getBlocks); // 查询区块内容
+  app.router.get('/api/v1/chain/info', app.controller.chain.getInfo); // 查询区块链信息
 };
