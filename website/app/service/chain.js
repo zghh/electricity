@@ -110,8 +110,15 @@ class ChainService extends Service {
   }
 
   async getBlocks(start, end) {
+    const decode = (bytes) => {
+      var encoded = "";
+      for (var i = 0; i < bytes.length; i++) {
+        encoded += '%' + bytes[i].toString(16);
+      }
+      return decodeURIComponent(encoded);
+    }
     const { ctx, config } = this;
-    const { channelName } = config.chain;
+    const { channelName, chaincodeName } = config.chain;
     const username = config.chain.admins[0].username;
     const network = await ctx.service.chain.generateNetwork();
     let blocks = {
@@ -121,7 +128,45 @@ class ChainService extends Service {
     for (let i = start; i < end; i++) {
       const result = await ctx.queryBlock(network, channelName, username, i);
       if (result.success) {
-        blocks.data.push(JSON.parse(JSON.stringify(result.data)));
+        const blockData = JSON.parse(JSON.stringify(result.data));
+        let block = {
+          header: {
+            number: blockData.header.number,
+            previousHash: blockData.header.previous_hash,
+            dataHash: blockData.header.data_hash,
+          },
+          data: [],
+        }
+        blockData.data.data.forEach(transactionData => {
+          if (transactionData.payload.header.channel_header.type != 3) { return; }
+          const funcName = String.fromCharCode.apply(String, transactionData.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec.input.args[0].data);
+          if (funcName !== 'submitSellerOrder' && funcName !== 'submitBuyerOrder') { return; }
+          let transaction = {
+            header: {
+              txId: transactionData.payload.header.channel_header.tx_id,
+              timestamp: parseInt(Date.parse(transactionData.payload.header.channel_header.timestamp) / 1000),
+              hash: transactionData.payload.data.actions[0].payload.action.proposal_response_payload.proposal_hash,
+            },
+            data: {
+              order: JSON.parse(decode(transactionData.payload.data.actions[0].payload.chaincode_proposal_payload.input.chaincode_spec.input.args[1].data)),
+              transactions: [],
+              orders: [],
+            },
+          }
+          transactionData.payload.data.actions[0].payload.action.proposal_response_payload.extension.results.ns_rwset.forEach(nsrwset => {
+            if (nsrwset.namespace !== chaincodeName) { return; }
+            nsrwset.rwset.writes.forEach(set => {
+              if (set.key.startsWith('transaction-')) {
+                transaction.data.transactions.push(JSON.parse(set.value));
+              }
+              if (set.key.startsWith('order-')) {
+                transaction.data.orders.push(JSON.parse(set.value));
+              }
+            });
+          });
+          block.data.push(transaction);
+        });
+        blocks.data.push(block);
       } else {
         return result;
       }
