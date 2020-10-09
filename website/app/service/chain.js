@@ -179,7 +179,20 @@ class ChainService extends Service {
     const { channelName } = config.chain;
     const username = config.chain.admins[0].username;
     const network = await ctx.service.chain.generateNetwork();
-    return await ctx.queryInfo(network, channelName, username);
+    const result = await ctx.queryInfo(network, channelName, username);
+    if (result.success) {
+      return {
+        success: true,
+        data: {
+          height: {
+            low: result.data.height.low,
+            high: result.data.height.high,
+          }
+        }
+      }
+    } else {
+      return result;
+    }
   }
 }
 
